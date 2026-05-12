@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>민성이의 운동일지</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- 헤더 -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">
+          <span class="logo-icon">🏃</span>
+          <span class="logo-text">민성이의 운동일지</span>
+        </div>
+        <div class="header-date" id="headerDate"></div>
+      </div>
+    </header>
+
+    <!-- 탭 네비게이션 -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="record">📝 기록</button>
+      <button class="tab-btn" data-tab="history">📅 히스토리</button>
+      <button class="tab-btn" data-tab="chart">📊 분석</button>
+      <button class="tab-btn" data-tab="ai">🤖 AI분석</button>
+    </nav>
+
+    <!-- 탭 컨텐츠 -->
+    <main class="main-content">
+
+      <!-- ===== 기록 탭 ===== -->
+      <section id="tab-record" class="tab-content active">
+        <div class="card">
+          <h2 class="card-title">오늘의 운동 기록</h2>
+
+          <div class="form-group">
+            <label>📅 날짜</label>
+            <input type="date" id="recDate" class="input" />
+          </div>
+
+          <div class="form-group">
+            <label>🏃 운동 종류</label>
+            <div class="exercise-type-btns">
+              <button class="type-btn active" data-type="walking">🚶 걷기</button>
+              <button class="type-btn" data-type="running">🏃 달리기</button>
+            </div>
+            <input type="hidden" id="recType" value="walking" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group half">
+              <label>⏱️ 운동 시간 (분)</label>
+              <input type="number" id="recDuration" class="input" placeholder="30" min="1" />
+            </div>
+            <div class="form-group half">
+              <label>📍 거리 (km)</label>
+              <input type="number" id="recDistance" class="input" placeholder="3.0" step="0.1" min="0" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group half">
+              <label>⚖️ 운동 전 체중 (kg)</label>
+              <input type="number" id="recWeightBefore" class="input" placeholder="78.5" step="0.1" min="30" />
+            </div>
+            <div class="form-group half">
+              <label>⚖️ 운동 후 체중 (kg)</label>
+              <input type="number" id="recWeightAfter" class="input" placeholder="78.0" step="0.1" min="30" />
+            </div>
+          </div>
+
+          <!-- 실시간 체중 변화 표시 -->
+          <div class="weight-diff-box" id="weightDiffBox" style="display:none;">
+            <span id="weightDiffText"></span>
+          </div>
+
+          <div class="form-group">
+            <label>📝 메모 (선택)</label>
+            <textarea id="recMemo" class="input textarea" placeholder="날씨, 컨디션 등 자유롭게 기록하세요"></textarea>
+          </div>
+
+          <button class="btn-primary" id="btnSave">💾 저장하기</button>
+        </div>
+
+        <!-- 오늘의 요약 -->
+        <div class="card today-summary" id="todaySummary" style="display:none;">
+          <h3 class="card-title">✅ 오늘 기록 완료!</h3>
+          <div id="todaySummaryContent"></div>
+        </div>
+      </section>
+
+      <!-- ===== 히스토리 탭 ===== -->
+      <section id="tab-history" class="tab-content">
+        <div class="card">
+          <div class="history-header">
+            <h2 class="card-title">운동 기록 히스토리</h2>
+            <div class="filter-row">
+              <select id="filterType" class="select">
+                <option value="all">전체</option>
+                <option value="walking">걷기만</option>
+                <option value="running">달리기만</option>
+              </select>
+              <select id="filterMonth" class="select">
+                <option value="all">전체 기간</option>
+              </select>
+            </div>
+          </div>
+          <div id="historyList" class="history-list">
+            <div class="empty-state">데이터를 불러오는 중...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 분석 차트 탭 ===== -->
+      <section id="tab-chart" class="tab-content">
+        <!-- 핵심 비교 카드 -->
+        <div class="compare-cards">
+          <div class="compare-card walking">
+            <div class="compare-icon">🚶</div>
+            <div class="compare-label">걷기 평균 감소</div>
+            <div class="compare-value" id="walkAvg">-</div>
+            <div class="compare-sub">kg/회</div>
+          </div>
+          <div class="compare-vs">VS</div>
+          <div class="compare-card running">
+            <div class="compare-icon">🏃</div>
+            <div class="compare-label">달리기 평균 감소</div>
+            <div class="compare-value" id="runAvg">-</div>
+            <div class="compare-sub">kg/회</div>
+          </div>
+        </div>
+
+        <!-- 승자 배너 -->
+        <div class="winner-banner" id="winnerBanner" style="display:none;">
+          <span id="winnerText"></span>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">📉 체중 변화 추이</h3>
+          <canvas id="weightChart"></canvas>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">🔥 운동 시간당 효율 비교</h3>
+          <canvas id="efficiencyChart"></canvas>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">📊 운동 횟수 비교</h3>
+          <canvas id="countChart"></canvas>
+        </div>
+      </section>
+
+      <!-- ===== AI 분석 탭 ===== -->
+      <section id="tab-ai" class="tab-content">
+        <div class="card">
+          <h2 class="card-title">🤖 AI 운동 분석</h2>
+          <p class="ai-desc">지금까지의 운동 데이터를 AI가 분석해드립니다.</p>
+          <button class="btn-primary" id="btnAiAnalyze">🔍 AI 분석 시작</button>
+        </div>
+        <div class="card ai-result-card" id="aiResultCard" style="display:none;">
+          <h3 class="card-title">📋 분석 결과</h3>
+          <div id="aiResult" class="ai-result"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 로딩 오버레이 -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">저장 중...</div>
+    </div>
+
+    <!-- 토스트 메시지 -->
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module" src="app.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</body>
+</html>
