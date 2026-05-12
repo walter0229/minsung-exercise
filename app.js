@@ -109,10 +109,10 @@ function updateWeightDiff() {
     const diff = after - before;
     box.style.display = "block";
     if (diff < 0) {
-      text.textContent = `🔥 운동 후 ${Math.abs(diff).toFixed(1)}kg 감소!`;
+      text.textContent = `🔥 운동 후 ${Math.abs(diff).toFixed(2)}kg 감소!`;
       text.style.color = "#00e5ff";
     } else if (diff > 0) {
-      text.textContent = `📈 운동 후 ${diff.toFixed(1)}kg 증가`;
+      text.textContent = `📈 운동 후 ${diff.toFixed(2)}kg 증가`;
       text.style.color = "#ff6b35";
     } else {
       text.textContent = `➡️ 운동 전후 변화 없음`;
