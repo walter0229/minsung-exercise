@@ -1,6 +1,6 @@
 {
-  "name": "민성이의 운동일지",
-  "short_name": "운동일지",
+  "name": "민성운동",
+  "short_name": "민성운동",
   "description": "걷기 vs 달리기 체중 감소 효과 분석 앱",
   "start_url": "/minsung-exercise/",
   "display": "standalone",
@@ -9,9 +9,16 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f3c3.png",
-      "sizes": "72x72",
-      "type": "image/png"
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
